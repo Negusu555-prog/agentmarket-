@@ -1,0 +1,13 @@
+{
+  "name": "agentmarket",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "cd apps/api && python main.py",
+    "dev:web": "cd apps/web && npm run dev"
+  }
+}
