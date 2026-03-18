@@ -4,7 +4,7 @@
 
 from fastapi import FastAPI
 from dotenv import load_dotenv
-from routers import agents, auth
+from routers import agents, auth, validation
 import uvicorn
 
 load_dotenv()
@@ -18,6 +18,7 @@ app = FastAPI(
 # ─── חיבור Routers ────────────────────────────
 app.include_router(agents.router)
 app.include_router(auth.router)
+app.include_router(validation.router)
 
 
 # ─── Routes בסיסיים ───────────────────────────

@@ -1,12 +1,11 @@
 # ─────────────────────────────────────────────
 # create_tables.py
-#
-# יוצר את כל הטבלאות במסד הנתונים.
 # ─────────────────────────────────────────────
 
 from database import engine, Base
 from models.agent_model import AgentModel
 from models.user_model import UserModel
+from models.validation_model import ValidationReport
 
 def create_tables():
     print("יוצר טבלאות...")
