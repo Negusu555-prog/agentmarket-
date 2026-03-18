@@ -1,0 +1,16 @@
+# סביבה
+.env
+venv/
+__pycache__/
+*.pyc
+
+# PyCharm
+.idea/
+
+# Node
+node_modules/
+
+# Build
+dist/
+build/
+.next/

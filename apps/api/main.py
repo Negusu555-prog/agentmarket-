@@ -3,6 +3,7 @@
 # ─────────────────────────────────────────────
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from routers import agents, auth, validation
 import uvicorn
@@ -15,13 +16,24 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# ─── חיבור Routers ────────────────────────────
+# ─── CORS ─────────────────────────────────────
+# מאפשר לפרונטאנד לדבר עם הבאקנד.
+# בפיתוח — מאפשרים הכל.
+# בproduction — נגביל לכתובת האמיתית בלבד.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ─── Routers ──────────────────────────────────
 app.include_router(agents.router)
 app.include_router(auth.router)
 app.include_router(validation.router)
 
 
-# ─── Routes בסיסיים ───────────────────────────
 @app.get("/")
 def root():
     return {
