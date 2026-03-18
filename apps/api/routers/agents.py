@@ -1,17 +1,19 @@
 # ─────────────────────────────────────────────
 # routers/agents.py
 #
-# ה-router רק מקבל בקשות ומחזיר תשובות.
-# הלוגיקה עברה ל-agent_service.
+# עכשיו מקבל DB session בכל בקשה
+# ומעביר אותו ל-service.
 # ─────────────────────────────────────────────
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from models.agent import AgentCreate, AgentResponse
 from services.agent_service import (
     get_all_agents,
     get_agent_by_id,
     create_agent
 )
+from database import get_db
 
 router = APIRouter(
     prefix="/agents",
@@ -20,15 +22,19 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[AgentResponse])
-def get_agents():
-    """מחזיר את כל הסוכנים המאושרים"""
-    return get_all_agents()
+def get_agents(db: Session = Depends(get_db)):
+    """
+    מחזיר את כל הסוכנים המאושרים.
+    Depends(get_db) = FastAPI פותח session
+    ומעביר אותו לפונקציה אוטומטית.
+    """
+    return get_all_agents(db)
 
 
 @router.get("/{agent_id}", response_model=AgentResponse)
-def get_agent(agent_id: str):
+def get_agent(agent_id: str, db: Session = Depends(get_db)):
     """מחזיר סוכן לפי ID"""
-    agent = get_agent_by_id(agent_id)
+    agent = get_agent_by_id(db, agent_id)
 
     if not agent:
         raise HTTPException(
@@ -40,9 +46,13 @@ def get_agent(agent_id: str):
 
 
 @router.post("/", response_model=AgentResponse, status_code=201)
-def create_new_agent(agent_data: AgentCreate):
-    """יוצר סוכן חדש"""
+def create_new_agent(
+    agent_data: AgentCreate,
+    db: Session = Depends(get_db)
+):
+    """יוצר סוכן חדש ושומר ב-Supabase"""
     return create_agent(
+        db=db,
         agent_data=agent_data,
         creator_id="temp-creator-id"
     )
