@@ -4,7 +4,7 @@
 
 from fastapi import FastAPI
 from dotenv import load_dotenv
-from routers import agents
+from routers import agents, auth
 import uvicorn
 
 load_dotenv()
@@ -16,15 +16,11 @@ app = FastAPI(
 )
 
 # ─── חיבור Routers ────────────────────────────
-# include_router מצרף את כל ה-routes
-# מהקובץ agents.py לאפליקציה הראשית.
-# עכשיו /agents/ ו-/agents/{id} זמינים.
-
 app.include_router(agents.router)
+app.include_router(auth.router)
 
 
 # ─── Routes בסיסיים ───────────────────────────
-
 @app.get("/")
 def root():
     return {
